@@ -22,7 +22,6 @@ extern int ptlr;
 extern struct SYSTEMFRAMETABLE *systemframetable;
 extern struct PROCESSPAGETABLE *ptbr;
 
-
 int getfreeframe();
 int searchvirtualframe();
 int getvirtualframe();
@@ -130,11 +129,16 @@ int get_lru()
 	int i;
 	int p=0;
 	for(i=0;i<6;i++)
-		if((ptbr+i)->tlastaccess < t)
-		{
-			t = (ptbr+i)->tlastaccess;
-			p = i;
-		}
+    {
+        if((ptbr + i)->presente == 1)
+        {
+            if((ptbr+i)->tlastaccess < t)
+            {
+                t = (ptbr+i)->tlastaccess;
+                p = i;
+            }
+        }
+    }
 	return(p);
 }
 
@@ -169,7 +173,7 @@ int getvirtualframe()
             systemframetable[i].assigned=1;
             break;
         }
-    if(i<systemframetablesize+framesbegin)
+    if(i<2*(systemframetablesize+framesbegin))
         systemframetable[i].assigned=1;
     else
         i=-1;
